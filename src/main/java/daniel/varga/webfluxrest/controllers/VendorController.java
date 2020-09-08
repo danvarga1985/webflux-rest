@@ -2,11 +2,13 @@ package daniel.varga.webfluxrest.controllers;
 
 import daniel.varga.webfluxrest.domain.Vendor;
 import daniel.varga.webfluxrest.repositories.VendorRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.reactivestreams.Publisher;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.concurrent.Flow;
 
 @RestController
 public class VendorController {
@@ -26,4 +28,17 @@ public class VendorController {
     public Mono<Vendor> getVendorById(@PathVariable String id) {
         return vendorRepository.findById(id);
     }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(BASE_URL)
+    Mono<Void> createVendor(@RequestBody Publisher<Vendor> vendorStream) {
+        return vendorRepository.saveAll(vendorStream).then();
+    }
+
+    @PutMapping(BASE_URL + "/{id}")
+    Mono<Vendor> updateVendor(@PathVariable String id, @RequestBody Vendor vendor) {
+        vendor.setId(id);
+        return vendorRepository.save(vendor);
+    }
+
 }
