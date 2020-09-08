@@ -14,6 +14,10 @@ import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 class VendorControllerTest {
     WebTestClient webTestClient;
@@ -29,7 +33,7 @@ class VendorControllerTest {
 
     @Test
     void testListVendors() {
-        BDDMockito.given(vendorRepository.findAll())
+        given(vendorRepository.findAll())
                 .willReturn(Flux.just(Vendor.builder().firstName("Brother").lastName("Theodore").build(),
                         Vendor.builder().firstName("Cliff").lastName("Barnes").build()));
 
@@ -44,7 +48,7 @@ class VendorControllerTest {
     void testGetVendorById() {
         Vendor vendor = Vendor.builder().firstName("Tom").lastName("Waits").id(String.valueOf(1)).build();
 
-        BDDMockito.given(vendorRepository.findById("1"))
+        given(vendorRepository.findById("1"))
                 .willReturn(Mono.just(vendor));
 
         webTestClient.get()
@@ -56,7 +60,7 @@ class VendorControllerTest {
 
     @Test
     void testCreateVendor() {
-        BDDMockito.given(vendorRepository.saveAll(any(Publisher.class)))
+        given(vendorRepository.saveAll(any(Publisher.class)))
                 .willReturn(Flux.just(Vendor.builder().build()));
 
         Mono<Vendor> vendorToSaveMono = Mono.just(Vendor.builder().firstName("Ernst").lastName("Junger").build());
@@ -70,7 +74,7 @@ class VendorControllerTest {
 
     @Test
     void testUpdateVendor() {
-        BDDMockito.given(vendorRepository.save(any(Vendor.class)))
+        given(vendorRepository.save(any(Vendor.class)))
                 .willReturn(Mono.just(Vendor.builder().build()));
 
         Mono<Vendor> vendorToUpdate = Mono.just(Vendor.builder().firstName("Ernst").lastName("Junger").build());
