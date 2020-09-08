@@ -31,7 +31,7 @@ class VendorControllerTest {
                         Vendor.builder().firstName("Cliff").lastName("Barnes").build()));
 
         webTestClient.get()
-                .uri("/api/v1/vendors")
+                .uri(VendorController.BASE_URL)
                 .exchange()
                 .expectBodyList(Vendor.class)
                 .hasSize(2);
@@ -45,7 +45,7 @@ class VendorControllerTest {
                 .willReturn(Mono.just(vendor));
 
         webTestClient.get()
-                .uri("/api/v1/vendors/1")
+                .uri(VendorController.BASE_URL + "/1")
                 .exchange()
                 .expectBody(Vendor.class)
                 .isEqualTo(vendor);
